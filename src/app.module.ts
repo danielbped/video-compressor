@@ -16,7 +16,6 @@ import { UserModule } from "./routes/user/user.module";
       database: process.env.MYSQL_DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
-      
     }),
   ],
 })

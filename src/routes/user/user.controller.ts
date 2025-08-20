@@ -24,7 +24,7 @@ import {
 } from '../../schemas/login.schema';
 
 @ApiTags('Usuários')
-@Controller()
+@Controller('api')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
