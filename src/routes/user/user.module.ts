@@ -10,7 +10,7 @@ import { LoginMiddleware } from "../../middleware/login.middleware";
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],
   providers: [UserService],
-  exports: [UserService],
+  exports: [UserService, TypeOrmModule],
 })
 export class UserModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
