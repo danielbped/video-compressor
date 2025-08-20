@@ -19,7 +19,7 @@ export class GCSProvider {
         .pipe(file.createWriteStream({ resumable: false }))
         .on('finish', () => resolve({
           url: `https://storage.googleapis.com/${this.bucketName}/${destination}`,
-          path: `gs://${this.bucketName}/${destination}`
+          path: `${destination}`
         }))
         .on('error', reject);
     });
