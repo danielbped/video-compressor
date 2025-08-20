@@ -55,3 +55,4 @@ pids
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 credentials/service-account.json
+tsconfig.build.tsbuildinfo
