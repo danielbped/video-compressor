@@ -35,6 +35,9 @@ export default class File {
   public readonly url!: string;
 
   @Column()
+  public readonly path!: string;
+
+  @Column()
   public readonly filename!: string;
 
   public constructor(

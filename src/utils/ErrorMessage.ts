@@ -19,4 +19,5 @@ export default {
   InvalidContent: 'Invalid content.',
   FileProcessingError: 'Error processing file.',
   FileNotFound: 'File not found.',
+  NoFileProvided: 'No file provided.',
 };

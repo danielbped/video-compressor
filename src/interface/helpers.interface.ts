@@ -5,10 +5,12 @@ import { Request } from 'express'
 export interface FileHandlerResponse {
   filename: string;
   url: string;
+  path: string;
 }
 
 export interface FileHandlerInterface {
-  handle(file: MulterFile): Promise<FileHandlerResponse>;
+  create(file: MulterFile): Promise<FileHandlerResponse>;
+  delete(filePath: string): Promise<void>;
 }
 
 export interface RequestWithUser extends Request {

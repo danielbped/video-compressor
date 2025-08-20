@@ -18,7 +18,12 @@ export class FileService {
   }
 
   async upload(data: ICreateFileDTO): Promise<CreateFileResponse> {
-    const fileData = await this.fileHandler.handle(data.file)
+    
+    if (!data.file) {
+      throw new Error(ErrorMessage.NoFileProvided)
+    }
+    
+    const fileData = await this.fileHandler.create(data.file)
 
     if (!fileData) {
       throw new Error(ErrorMessage.FileProcessingError)
@@ -37,6 +42,16 @@ export class FileService {
         lastName: createdFile.user.lastName,
       }
     }
+  }
+
+  async deleteFile(fileId: string): Promise<void> {
+    const file = await this.filesRepository.findOne({ where: { id: fileId } })
+    if (!file) {
+      throw new Error(ErrorMessage.FileNotFound)
+    }
+
+    await this.fileHandler.delete(file.path)
+    await this.filesRepository.remove(file)
   }
 
   async getFilesByUser(userId: string): Promise<File[]> {

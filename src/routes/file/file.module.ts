@@ -25,5 +25,8 @@ export class FileModule implements NestModule {
     consumer
       .apply(AuthorizationMiddleware)
       .forRoutes({ path: "api/videos", method: RequestMethod.GET });
+    consumer
+      .apply(AuthorizationMiddleware)
+      .forRoutes({ path: "api/videos/:id", method: RequestMethod.DELETE });
   }
 }

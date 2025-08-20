@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Request, UseInterceptors } from '@nestjs/common'
+import { Controller, Delete, Get, Post, Request, UseInterceptors } from '@nestjs/common'
 import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { FileService } from './file.service'
 import { StatusCodes } from 'http-status-codes'
@@ -53,4 +53,24 @@ export class FileController {
     const { user } = req
     return this.fileService.getFilesByUser(user.id)
   } 
+
+  @Delete('videos/:id')
+  @ApiOperation({ summary: 'Deletar um vídeo pelo ID' })
+  @ApiResponse({
+    status: StatusCodes.NO_CONTENT,
+    description: 'Vídeo deletado com sucesso.',
+  })
+  @ApiResponse({
+    status: StatusCodes.NOT_FOUND,
+    description: 'Vídeo não encontrado.',
+  })
+  @ApiResponse({
+    status: StatusCodes.UNAUTHORIZED,
+    description: 'Usuário não autenticado.',
+  })
+  async deleteFile(@Request() req): Promise<void> {
+    const { params } = req
+    const fileId = params.id
+    return this.fileService.deleteFile(fileId)
+  }
 }

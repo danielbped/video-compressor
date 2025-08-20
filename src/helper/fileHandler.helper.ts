@@ -12,7 +12,7 @@ export default class FileHandler implements FileHandlerInterface {
     this.gcsProvider = gcsProvider;
   }
 
-  public async handle(file: MulterFile): Promise<FileHandlerResponse> {
+  public async create(file: MulterFile): Promise<FileHandlerResponse> {
     const inputPath = file.path;
     const { name, ext } = parse(file.filename);
     const compressedFilename = `${name}_low${ext}`;
@@ -34,17 +34,22 @@ export default class FileHandler implements FileHandlerInterface {
       });
 
       const stream = createReadStream(tempOutputPath);
-      const gcsUrl = await this.gcsProvider.uploadFile(stream, compressedFilename);
+      const gcsFile = await this.gcsProvider.uploadFile(stream, compressedFilename);
 
       unlinkSync(inputPath);
       unlinkSync(tempOutputPath);
 
       return {
         filename: compressedFilename,
-        url: gcsUrl,
+        url: gcsFile.url,
+        path: gcsFile.path,
       };
     } catch (error) {
       throw error;
     }
+  }
+
+  public async delete(filePath: string): Promise<void> {
+    await this.gcsProvider.deleteFile(filePath);
   }
 }
