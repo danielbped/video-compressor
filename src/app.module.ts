@@ -1,56 +1,23 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
-import { config } from 'dotenv';
-import { UserModule } from './routes/user/user.module';
-import User from './entity/user.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserController } from './routes/user/user.controller';
-import { UserService } from './routes/user/user.service';
-import { UserMiddleware } from './middleware/user.middleware';
-import { AuthenticationMiddleware } from './middleware/authentication.middleware';
-
-config();
-
-const {
-  MYSQL_DB_USER,
-  MYSQL_DB_PASSWORD,
-  MYSQL_DB_NAME,
-  MYSQL_DB_HOST,
-  MYSQL_DB_PORT,
-} = process.env;
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { ConfigModule } from "@nestjs/config";
+import { UserModule } from "./routes/user/user.module";
 
 @Module({
   imports: [
     UserModule,
-    TypeOrmModule.forFeature([User]),
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: MYSQL_DB_HOST,
-      port: Number(MYSQL_DB_PORT),
-      username: MYSQL_DB_USER,
-      password: MYSQL_DB_PASSWORD,
-      database: MYSQL_DB_NAME,
-      entities: [User],
-      synchronize: true,
+      type: "mysql",
+      host: process.env.MYSQL_DB_HOST,
+      port: parseInt(process.env.MYSQL_DB_PORT || '3310', 10),
+      username: process.env.MYSQL_DB_USER,
+      password: process.env.MYSQL_DB_PASSWORD,
+      database: process.env.MYSQL_DB_NAME,
       autoLoadEntities: true,
+      synchronize: true,
+      
     }),
   ],
-  controllers: [UserController],
-  providers: [UserService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(UserMiddleware)
-      .forRoutes({ path: 'user', method: RequestMethod.POST });
-
-    consumer.apply(AuthenticationMiddleware).forRoutes('conversation', {
-      path: 'message',
-      method: RequestMethod.POST,
-    });
-  }
-}
+export class AppModule {}
