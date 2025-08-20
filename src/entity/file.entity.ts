@@ -6,14 +6,19 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  Column,
 } from 'typeorm';
 import { uuid } from 'uuidv4';
 import User from './user.entity';
+import { File as MulterFile } from 'multer';
 
-export interface ICreateConversationDTO extends Omit<Conversation, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface ICreateFileDTO {
+  file: MulterFile;
+  user: User;
+}
 
 @Entity()
-export default class Conversation {
+export default class File {
   @PrimaryColumn()
   public readonly id!: string;
 
@@ -26,8 +31,14 @@ export default class Conversation {
   @UpdateDateColumn()
   public readonly updatedAt!: Date;
 
+  @Column()
+  public readonly url!: string;
+
+  @Column()
+  public readonly filename!: string;
+
   public constructor(
-    props: Omit<Conversation, 'id' | 'createdAt' | 'updatedAt'>,
+    props: Omit<File, 'id' | 'createdAt' | 'updatedAt'>,
     id?: string,
   ) {
     Object.assign(this, props);

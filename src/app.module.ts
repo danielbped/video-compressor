@@ -2,10 +2,12 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 import { UserModule } from "./routes/user/user.module";
+import { FileModule } from "./routes/file/file.module";
 
 @Module({
   imports: [
     UserModule,
+    FileModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: "mysql",

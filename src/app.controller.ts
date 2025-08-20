@@ -46,11 +46,9 @@ export class AppController {
             '-b:a 128k',
           ])
           .on('end', () => {
-            console.log('Compressão concluída:', outputPath);
             resolve();
           })
           .on('error', (err) => {
-            console.error('Erro durante a compressão:', err);
             reject(err);
           })
           .save(outputPath);

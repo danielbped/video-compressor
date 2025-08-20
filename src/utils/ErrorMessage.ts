@@ -17,4 +17,6 @@ export default {
   UnexpectedError: 'Unexpected Error.',
   ConversationNotFound: 'Conversation not found.',
   InvalidContent: 'Invalid content.',
+  FileProcessingError: 'Error processing file.',
+  FileNotFound: 'File not found.',
 };

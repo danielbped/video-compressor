@@ -14,3 +14,11 @@ export interface CreateUserResponse {
   user: Partial<User>;
   token: string;
 }
+
+export interface CreateFileResponse {
+  id: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  url: string;
+}
