@@ -1,10 +1,11 @@
 import { Controller, Delete, Get, Post, Request, UseInterceptors } from '@nestjs/common'
-import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { FileService } from './file.service'
 import { StatusCodes } from 'http-status-codes'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { CreateFileResponse } from '../../interface/response.interface'
+import { FileSchemaBody, FileSchemaResponse } from '../../schemas/file.schema'
 
 @ApiTags('Vídeos')
 @Controller('api')
@@ -13,10 +14,10 @@ export class FileController {
 
   @Post('videos')
   @ApiOperation({ summary: 'Adicionar um novo vídeo' })
-  // @ApiBody({ type: FileSchemaBody })
+  @ApiBody({ type: FileSchemaBody })
   @ApiCreatedResponse({
     description: 'Criado com sucesso.',
-    // type: UserSchemaResponse,
+    type: FileSchemaResponse,
   })
   @ApiResponse({
     status: StatusCodes.BAD_REQUEST,
@@ -43,7 +44,7 @@ export class FileController {
   @ApiResponse({
     status: StatusCodes.OK,
     description: 'Lista de vídeos retornada com sucesso.',
-    // type: [UserSchemaResponse],
+    type: [FileSchemaResponse],
   })
   @ApiResponse({
     status: StatusCodes.UNAUTHORIZED,
