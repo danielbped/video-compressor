@@ -7,6 +7,7 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
 import User from "../entity/user.entity"
 import File from "../entity/file.entity"
+import { RequestWithUser } from "../interface/helpers.interface"
 
 @Injectable()
 export class AuthorizationMiddleware implements NestMiddleware {
@@ -21,10 +22,8 @@ export class AuthorizationMiddleware implements NestMiddleware {
     this.token = new Token()
   }
 
-  async use(req: Request, res: Response, next: NextFunction) {
+  async use(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params
-
       const token = req.headers.authorization
 
       if (!token || typeof token !== 'string') {
@@ -39,21 +38,23 @@ export class AuthorizationMiddleware implements NestMiddleware {
         return res.status(StatusCodes.UNAUTHORIZED).json({ message: ErrorMessage.InvalidToken })
       }
 
+      const loggedUser = this.token.compare(parsedToken)
+
+      if (!loggedUser) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({ message: ErrorMessage.Unauthorized })
+      }
+
+      const id = loggedUser?.id
+
       if (!id) {
         return res.status(StatusCodes.BAD_REQUEST).json({ message: ErrorMessage.IdNotFound })
       }
 
       const user = await this.userRepository.findOne({ where: { id } })
-      const file = await this.fileRepository.findOne({ where: { id }, relations: ['user'] })
+      const file = await this.fileRepository.findOne({ where: { user: { id } }, relations: ['user'] })
 
       if (!user || !file) {
         return res.status(StatusCodes.NOT_FOUND).json({ message: ErrorMessage.IdNotFound })
-      }
-
-      const loggedUser = this.token.compare(parsedToken)
-
-      if (!loggedUser) {
-        return res.status(StatusCodes.UNAUTHORIZED).json({ message: ErrorMessage.Unauthorized })
       }
 
       const isAuthorized = user ? loggedUser.id === user.id : loggedUser.id === file.user.id
@@ -62,7 +63,7 @@ export class AuthorizationMiddleware implements NestMiddleware {
         return res.status(StatusCodes.UNAUTHORIZED).json({ message: ErrorMessage.Unauthorized })
       }
 
-      req.body = { ...req.body, user: loggedUser }
+      req.user = loggedUser
 
       return next()
     } catch (err: any) {

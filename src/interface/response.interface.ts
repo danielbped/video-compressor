@@ -17,7 +17,7 @@ export interface CreateUserResponse {
 
 export interface CreateFileResponse {
   id: string;
-  userId: string;
+  user: Partial<User>;
   createdAt: Date;
   updatedAt: Date;
   url: string;
