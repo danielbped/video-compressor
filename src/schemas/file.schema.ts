@@ -14,7 +14,7 @@ export class FileSchemaBody {
 export class FileSchema {
   @ApiProperty({
     type: String,
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    example: '123e614174000',
     description: 'ID do arquivo.',
   })
   id: string;
@@ -49,14 +49,14 @@ export class FileSchema {
 
   @ApiProperty({
     type: String,
-    example: 'https://storage.googleapis.com/video-compressor-bucket/123e4567-e89b-12d3-a456-426614174000.mp4',
+    example: 'https://storage.googleapis.com/bucket/123e614174000.mp4',
     description: 'URL pública do arquivo.',
   })
   url: string;
 
   @ApiProperty({
     type: String,
-    example: 'uploads/123e4567-e89b-12d3-a456-426614174000.mp4',
+    example: 'uploads/123e614174000.mp4',
     description: 'Caminho do arquivo no bucket/storage.',
   })
   path: string;

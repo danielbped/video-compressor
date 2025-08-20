@@ -1,5 +1,5 @@
 import { Controller, Delete, Get, Post, Request, UseInterceptors } from '@nestjs/common'
-import { ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { FileService } from './file.service'
 import { StatusCodes } from 'http-status-codes'
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -14,6 +14,7 @@ export class FileController {
 
   @Post('videos')
   @ApiOperation({ summary: 'Adicionar um novo vídeo' })
+  @ApiConsumes('multipart/form-data')
   @ApiBody({ type: FileSchemaBody })
   @ApiCreatedResponse({
     description: 'Criado com sucesso.',
