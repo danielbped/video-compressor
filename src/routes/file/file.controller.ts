@@ -1,10 +1,10 @@
-import { Controller, Post, Request, UseInterceptors } from '@nestjs/common'
+import { Controller, Get, Post, Request, UseInterceptors } from '@nestjs/common'
 import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { FileService } from './file.service'
 import { StatusCodes } from 'http-status-codes'
-import File from '../../entity/file.entity'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
+import { CreateFileResponse } from '../../interface/response.interface'
 
 @ApiTags('Vídeos')
 @Controller('api')
@@ -33,8 +33,24 @@ export class FileController {
       }),
     }),
   )
-  async handleFileUpload(@Request() req): Promise<File> {
+  async handleFileUpload(@Request() req): Promise<CreateFileResponse> {
     const { file, user } = req
     return this.fileService.upload({ file, user })
   }
+
+  @Get('videos')
+  @ApiOperation({ summary: 'Listar vídeos do usuário autenticado' })
+  @ApiResponse({
+    status: StatusCodes.OK,
+    description: 'Lista de vídeos retornada com sucesso.',
+    // type: [UserSchemaResponse],
+  })
+  @ApiResponse({
+    status: StatusCodes.UNAUTHORIZED,
+    description: 'Usuário não autenticado.',
+  })
+  async getUserFiles(@Request() req): Promise<CreateFileResponse[]> {
+    const { user } = req
+    return this.fileService.getFilesByUser(user.id)
+  } 
 }

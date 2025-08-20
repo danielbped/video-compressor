@@ -5,6 +5,8 @@ import { FileController } from "./file.controller";
 import { FileService } from "./file.service";
 import { FileMiddleware } from "../../middleware/file.middleware";
 import { UserModule } from "../user/user.module";
+import { GCSProvider } from "../../provider/googleCloud.provider";
+import { AuthorizationMiddleware } from "../../middleware/authorization.middleware";
 
 @Module({
   imports: [
@@ -12,7 +14,7 @@ import { UserModule } from "../user/user.module";
     UserModule,
   ],
   controllers: [FileController],
-  providers: [FileService, FileMiddleware],
+  providers: [FileService, FileMiddleware, GCSProvider],
   exports: [FileService],
 })
 export class FileModule implements NestModule {
@@ -20,5 +22,8 @@ export class FileModule implements NestModule {
     consumer
       .apply(FileMiddleware)
       .forRoutes({ path: "api/videos", method: RequestMethod.POST });
+    consumer
+      .apply(AuthorizationMiddleware)
+      .forRoutes({ path: "api/videos", method: RequestMethod.GET });
   }
 }
