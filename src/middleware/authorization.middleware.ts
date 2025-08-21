@@ -53,11 +53,15 @@ export class AuthorizationMiddleware implements NestMiddleware {
       const user = await this.userRepository.findOne({ where: { id } })
       const file = await this.fileRepository.findOne({ where: { user: { id } }, relations: ['user'] })
 
-      if (!user || !file) {
+      if (!user) {
         return res.status(StatusCodes.NOT_FOUND).json({ message: ErrorMessage.IdNotFound })
       }
 
-      const isAuthorized = user ? loggedUser.id === user.id : loggedUser.id === file.user.id
+      if (file && file.user.id !== user.id) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({ message: ErrorMessage.Unauthorized })
+      }
+
+      const isAuthorized = loggedUser.id === user.id
 
       if (!isAuthorized) {
         return res.status(StatusCodes.UNAUTHORIZED).json({ message: ErrorMessage.Unauthorized })
