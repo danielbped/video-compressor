@@ -1,14 +1,17 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { UserSchema } from './user.schema';
+import { ApiProperty } from '@nestjs/swagger'
+import { UserSchema } from './user.schema'
 
 export class FileSchemaBody {
   @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'Arquivo de vídeo a ser enviado.',
+    type: 'array',
+    items: {
+      type: 'string',
+      format: 'binary',
+    },
+    description: 'Arquivos de vídeo a serem enviados.',
     nullable: false,
   })
-  file: any;
+  files: any[]
 }
 
 export class FileSchema {
@@ -17,7 +20,7 @@ export class FileSchema {
     example: '123e614174000',
     description: 'ID do arquivo.',
   })
-  id: string;
+  id: string
 
   @ApiProperty({
     type: () => UserSchema,
@@ -31,48 +34,48 @@ export class FileSchema {
       updatedAt: new Date(),
     },
   })
-  user: UserSchema;
+  user: UserSchema
 
   @ApiProperty({
     type: Date,
     example: new Date(),
     description: 'Data de criação.',
   })
-  createdAt: Date;
+  createdAt: Date
 
   @ApiProperty({
     type: Date,
     example: new Date(),
     description: 'Data de atualização.',
   })
-  updatedAt: Date;
+  updatedAt: Date
 
   @ApiProperty({
     type: String,
     example: 'https://storage.googleapis.com/bucket/123e614174000.mp4',
     description: 'URL pública do arquivo.',
   })
-  url: string;
+  url: string
 
   @ApiProperty({
     type: String,
     example: 'uploads/123e614174000.mp4',
     description: 'Caminho do arquivo no bucket/storage.',
   })
-  path: string;
+  path: string
 
   @ApiProperty({
     type: String,
     example: 'video.mp4',
     description: 'Nome original do arquivo.',
   })
-  filename: string;
+  filename: string
 }
 
 export class FileSchemaResponse {
   @ApiProperty({
-    type: () => FileSchema,
-    description: 'Arquivo criado.',
+    type: [FileSchema],
+    description: 'Lista de arquivos criados.',
   })
-  file: FileSchema;
+  files: FileSchema[]
 }

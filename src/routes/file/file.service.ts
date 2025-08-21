@@ -1,10 +1,11 @@
 import { InjectRepository } from "@nestjs/typeorm"
 import ErrorMessage from "../../utils/ErrorMessage"
-import File, { ICreateFileDTO } from "../../entity/file.entity"
+import File from "../../entity/file.entity"
 import { Repository } from "typeorm"
 import FileHandler from "../../helper/fileHandler.helper"
 import { GCSProvider } from "../../provider/googleCloud.provider"
 import { CreateFileResponse } from "../../interface/response.interface"
+import { File as MulterFile } from 'multer';
 
 export class FileService {
   private fileHandler: FileHandler
@@ -17,31 +18,34 @@ export class FileService {
     this.fileHandler = new FileHandler(this.googleCloudProvider)
   }
 
-  async upload(data: ICreateFileDTO): Promise<CreateFileResponse> {
-    
-    if (!data.file) {
+  async upload(data: { files: MulterFile[]; user: any }): Promise<CreateFileResponse[]> {
+    if (!data.files || data.files.length === 0) {
       throw new Error(ErrorMessage.NoFileProvided)
     }
-    
-    const fileData = await this.fileHandler.create(data.file)
 
-    if (!fileData) {
-      throw new Error(ErrorMessage.FileProcessingError)
-    }
+    const results: CreateFileResponse[] = []
 
-    const newFile = new File({ ...fileData, user: data.user })
+    for (const file of data.files) {
+      const fileData = await this.fileHandler.create(file)
 
-    const createdFile = await this.filesRepository.save(newFile)
-
-    return { 
-      ...createdFile,
-      user: {
-        id: createdFile.user.id,
-        email: createdFile.user.email,
-        firstName: createdFile.user.firstName,
-        lastName: createdFile.user.lastName,
+      if (!fileData) {
+        throw new Error(ErrorMessage.FileProcessingError)
       }
+
+      const newFile = new File({ ...fileData, user: data.user })
+      const createdFile = await this.filesRepository.save(newFile)
+
+      results.push({
+        ...createdFile,
+        user: {
+          id: createdFile.user.id,
+          email: createdFile.user.email,
+          firstName: createdFile.user.firstName,
+          lastName: createdFile.user.lastName,
+        },
+      })
     }
+    return results
   }
 
   async deleteFile(fileId: string): Promise<void> {
@@ -68,6 +72,6 @@ export class FileService {
           }
         }
       }
-    )
+    ) || []
   }
 }
