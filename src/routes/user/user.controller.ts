@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
-import { Controller, Post, Request } from '@nestjs/common';
+import { Controller, HttpCode, Post, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
   CreateUserResponse,
@@ -64,6 +64,7 @@ export class UserController {
     status: StatusCodes.FORBIDDEN,
     description: 'Senha inválida.',
   })
+  @HttpCode(200)
   login(@Request() req): Promise<LoginResponse> {
     const { email, password } = req.body;
 
