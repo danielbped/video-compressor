@@ -273,6 +273,8 @@ As requisições que envolvem usuário (`POST /api/user` e `POST /api/login`) po
 ## Deletar um vídeo <a name="delete-file"></a>
 ### DELETE /api/videos/:id
 
+Ao deletar um vídeo, ele será deletado tanto do banco de dados quanto do GCS, removendo completamente o vídeo original e o comprimido.
+
 ### **Parâmetros da Requisição**
   
   | Parâmetro | Tipo   | Descrição             | Exemplo      |
