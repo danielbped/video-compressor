@@ -288,7 +288,7 @@ As requisições que envolvem usuário (`POST /api/user` e `POST /api/login`) po
     - **Descrição:** Usuário não autorizado.
 
   - Status **404** (Not Found)
-    - **Descrição:** Conversa não encontrada.
+    - **Descrição:** Vídeo não encontrada.
 
   - Status **400** (Bad Request)
     - **Descrição:** Dados inválidos.
@@ -302,3 +302,37 @@ A aplicação possui testes unitários de todas as rotas. Para rodar os testes, 
 ```
   npm run test
 ```
+
+# Banco de dados <a name="db"></a>
+
+O banco de dados foi desenvolvido utilizando **MySQL** com o auxílio da ORM **TypeORM** nas migrations e nas queries. A arquitetura do banco possui duas tabelas (User e File), e suas colunas podem ser observadas a seguir:
+
+### User
+
+| Coluna     | Tipo     |
+|---------------|----------|
+| `id`     | String   |
+| `firstName`| String   |
+| `lastName`| String   |
+| `email`| String   |
+| `password`| String   |
+| `createdAt`| Date   |
+| `updatedAt`| Date   |
+
+### File
+
+| Coluna     | Tipo     |
+|---------------|----------|
+| `id`     | String   |
+| `userId`| String   |
+| `compressed_url`| String   |
+| `compressed_path`| String  |
+| `compressed_filename`| String  |
+| `compressed_size`| Number  |
+| `original_url`| String   |
+| `original_path`| String  |
+| `original_filename`| String  |
+| `original_size`| Number  |
+| `compression_percentage`| Number  |
+| `createdAt`| Date   |
+| `updatedAt`| Date   |
