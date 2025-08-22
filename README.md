@@ -98,6 +98,11 @@ Com as variáveis de ambiente configuradas, basta executar o comando do Docker a
   docker-compose up -d --build
 ```
 
+Após finalizar o build execute o comando a seguir para rodar a aplicação
+```
+  npm run start
+```
+
 Caso tudo tenha dado certo, algo parecido com isso deve aparecer no terminal
 
 ```
