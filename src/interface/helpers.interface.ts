@@ -3,9 +3,15 @@ import User from '../entity/user.entity';
 import { Request } from 'express'
 
 export interface FileHandlerResponse {
-  filename: string;
-  url: string;
-  path: string;
+  original_filename: string;
+  compressed_filename: string;
+  original_url: string;
+  compressed_url: string;
+  original_path: string;
+  compressed_path: string;
+  original_size: number;
+  compressed_size: number;
+  compression_percentage: number;
 }
 
 export interface FileHandlerInterface {

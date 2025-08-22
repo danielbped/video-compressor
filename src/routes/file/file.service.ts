@@ -54,7 +54,8 @@ export class FileService {
       throw new Error(ErrorMessage.FileNotFound)
     }
 
-    await this.fileHandler.delete(file.path)
+    await this.fileHandler.delete(file.original_path)
+    await this.fileHandler.delete(file.compressed_path)
     await this.filesRepository.remove(file)
   }
 

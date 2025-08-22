@@ -20,5 +20,9 @@ export interface CreateFileResponse {
   user: Partial<User>;
   createdAt: Date;
   updatedAt: Date;
-  url: string;
+  original_url: string;
+  compressed_url: string;
+  compression_percentage: number;
+  original_size: number;
+  compressed_size: number;
 }

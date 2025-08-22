@@ -53,23 +53,65 @@ export class FileSchema {
   @ApiProperty({
     type: String,
     example: 'https://storage.googleapis.com/bucket/123e614174000.mp4',
-    description: 'URL pública do arquivo.',
+    description: 'URL pública do arquivo comprimido.',
   })
-  url: string
+  compressed_url: string
 
   @ApiProperty({
     type: String,
     example: 'uploads/123e614174000.mp4',
-    description: 'Caminho do arquivo no bucket/storage.',
+    description: 'Caminho do arquivo comprimido no bucket/storage.',
   })
-  path: string
+  compressed_path: string
 
   @ApiProperty({
     type: String,
     example: 'video.mp4',
-    description: 'Nome original do arquivo.',
+    description: 'Nome do arquivo comprimido.',
+  })
+  compressed_filename: string
+
+  @ApiProperty({
+    type: String,
+    example: 'https://storage.googleapis.com/bucket/123e614174000.mp4',
+    description: 'URL pública do arquivo original.',
+  })
+  original_url: string
+
+  @ApiProperty({
+    type: String,
+    example: 'uploads/123e614174000.mp4',
+    description: 'Caminho do arquivo original no bucket/storage.',
+  })
+  original_path: string
+
+  @ApiProperty({
+    type: String,
+    example: 'video.mp4',
+    description: 'Nome do arquivo original.',
   })
   filename: string
+  
+  @ApiProperty({
+    type: String,
+    example: 25,
+    description: 'Porcentagem de compressão.',
+  })
+  compression_percentage: number
+
+  @ApiProperty({
+    type: String,
+    example: 25,
+    description: 'Tamanho do arquivo comprimido (Em bytes).',
+  })
+  compressed_size: number
+
+  @ApiProperty({
+    type: String,
+    example: 25,
+    description: 'Tamanho do arquivo original (Em bytes).',
+  })
+  original_size: number
 }
 
 export class FileSchemaResponse {

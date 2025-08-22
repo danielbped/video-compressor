@@ -22,4 +22,5 @@ export default {
   NoFileProvided: 'No file provided.',
   MaxFileQuantityReached: 'Max file quantity reached.',
   MaxFileSizeReached: 'Max file size reached.',
+  InvalidFileType: 'Invalid file type.'
 };

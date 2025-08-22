@@ -32,13 +32,31 @@ export default class File {
   public readonly updatedAt!: Date;
 
   @Column()
-  public readonly url!: string;
+  public readonly compressed_url!: string;
 
   @Column()
-  public readonly path!: string;
+  public readonly compressed_path!: string;
 
   @Column()
-  public readonly filename!: string;
+  public readonly original_url!: string;
+
+  @Column()
+  public readonly original_path!: string;
+
+  @Column()
+  public readonly original_filename!: string;
+
+  @Column()
+  public readonly compressed_filename!: string;
+
+  @Column()
+  public readonly original_size: number;
+
+  @Column()
+  public readonly compressed_size: number;
+
+  @Column()
+  public readonly compression_percentage: number;
 
   public constructor(
     props: Omit<File, 'id' | 'createdAt' | 'updatedAt'>,

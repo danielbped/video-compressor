@@ -1,11 +1,10 @@
-import { Controller, Delete, Get, Post, Request, UseInterceptors } from '@nestjs/common'
+import { Controller, Delete, Get, Post, Request, UseGuards, UseInterceptors } from '@nestjs/common'
 import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { FileService } from './file.service'
 import { StatusCodes } from 'http-status-codes'
-import { FilesInterceptor } from '@nestjs/platform-express'
-import { diskStorage } from 'multer'
 import { CreateFileResponse } from '../../interface/response.interface'
 import { FileSchemaBody, FileSchemaResponse } from '../../schemas/file.schema'
+import { FileValidationInterceptor } from '../../interceptor/file.interceptor'
 
 @ApiTags('Vídeos')
 @Controller('api')
@@ -24,17 +23,7 @@ export class FileController {
     status: StatusCodes.BAD_REQUEST,
     description: 'Dados inválidos.',
   })
-  @UseInterceptors(
-    FilesInterceptor('files', 10, {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (_req, file, cb) => {
-          const filename = `${Date.now()}-${file.originalname}`
-          cb(null, filename)
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileValidationInterceptor)
   async handleFilesUpload(@Request() req): Promise<CreateFileResponse[]> {
     const { files, user } = req
     return this.fileService.upload({ files, user })
