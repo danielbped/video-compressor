@@ -4,8 +4,26 @@ import { FileService } from './file.service'
 import { CreateFileResponse } from '../../interface/response.interface'
 
 describe('FileController', () => {
-  let fileController: FileController
-  let fileService: FileService
+  let controller: FileController
+  let service: FileService
+
+  const mockFileResponse: CreateFileResponse = {
+    id: 'file-123',
+    user: { id: 'user-1', email: 'test@test.com' },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    original_url: 'http://original.com/video.mp4',
+    compressed_url: 'http://compressed.com/video.mp4',
+    compression_percentage: 50,
+    original_size: 1000,
+    compressed_size: 500,
+  }
+
+  const mockFileService = {
+    upload: jest.fn(),
+    getFilesByUser: jest.fn(),
+    deleteFile: jest.fn(),
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -13,66 +31,60 @@ describe('FileController', () => {
       providers: [
         {
           provide: FileService,
-          useValue: {
-            upload: jest.fn(),
-            getFilesByUser: jest.fn(),
-            deleteFile: jest.fn(),
-          },
+          useValue: mockFileService,
         },
       ],
     }).compile()
 
-    fileController = module.get<FileController>(FileController)
-    fileService = module.get<FileService>(FileService)
+    controller = module.get<FileController>(FileController)
+    service = module.get<FileService>(FileService)
   })
 
-  describe('handleFileUpload', () => {
-    it('should upload a file and return CreateFileResponse', async () => {
-      const reqMock = {
-        file: {},
-        user: { id: 'userId' },
-      }
-      const result: CreateFileResponse = {
-        id: 'fileId',
-        user: { id: 'userId' },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        url: 'http://example.com/fileId'
-      }
-      jest.spyOn(fileService, 'upload').mockResolvedValue(result)
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
 
-      expect(await fileController.handleFileUpload(reqMock as any)).toEqual(result)
-      expect(fileService.upload).toHaveBeenCalledWith({
-        file: reqMock.file,
-        user: reqMock.user,
+  describe('handleFilesUpload', () => {
+    it('deve chamar o service.upload com os arquivos e usuário corretos', async () => {
+      mockFileService.upload.mockResolvedValue([mockFileResponse])
+
+      const req = {
+        files: ['video1.mp4'],
+        user: { id: 'user-1' },
+      }
+
+      const result = await controller.handleFilesUpload(req)
+
+      expect(service.upload).toHaveBeenCalledWith({
+        files: req.files,
+        user: req.user,
       })
+      expect(result).toEqual([mockFileResponse])
     })
   })
 
   describe('getUserFiles', () => {
-    it('should return an array of files', async () => {
-      const reqMock = { user: { id: 'userId' } }
-      const result: CreateFileResponse[] = [{
-        id: 'fileId1',
-        user: { id: 'userId' },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        url: ''
-      }]
-      jest.spyOn(fileService, 'getFilesByUser').mockResolvedValue(result as any)
+    it('deve retornar os vídeos do usuário autenticado', async () => {
+      mockFileService.getFilesByUser.mockResolvedValue([mockFileResponse])
 
-      expect(await fileController.getUserFiles(reqMock as any)).toEqual(result)
-      expect(fileService.getFilesByUser).toHaveBeenCalledWith('userId')
+      const req = { user: { id: 'user-1' } }
+
+      const result = await controller.getUserFiles(req)
+
+      expect(service.getFilesByUser).toHaveBeenCalledWith('user-1')
+      expect(result).toEqual([mockFileResponse])
     })
   })
 
   describe('deleteFile', () => {
-    it('should call deleteFile with the provided id', async () => {
-      const reqMock = { params: { id: 'fileId' } }
+    it('deve chamar o service.deleteFile com o id correto', async () => {
+      mockFileService.deleteFile.mockResolvedValue(undefined)
 
-      await fileController.deleteFile(reqMock as any)
+      const req = { params: { id: 'file-123' } }
 
-      expect(fileService.deleteFile).toHaveBeenCalledWith('fileId')
+      await controller.deleteFile(req)
+
+      expect(service.deleteFile).toHaveBeenCalledWith('file-123')
     })
   })
 })
