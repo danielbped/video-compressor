@@ -20,4 +20,6 @@ export default {
   FileProcessingError: 'Error processing file.',
   FileNotFound: 'File not found.',
   NoFileProvided: 'No file provided.',
+  MaxFileQuantityReached: 'Max file quantity reached.',
+  MaxFileSizeReached: 'Max file size reached.',
 };

@@ -15,4 +15,5 @@ export interface FileHandlerInterface {
 
 export interface RequestWithUser extends Request {
   user?: User
+  files: File[]
 }

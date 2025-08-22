@@ -22,6 +22,10 @@ export class FileMiddleware implements NestMiddleware {
   async use(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       const token = req.headers.authorization
+      const files = req.files;
+      const maxFileSizeInMB = 10;
+      const maxFileSize = maxFileSizeInMB * 1024 * 1024;
+      const maxFilesQuantity = 5;
 
       if (!token) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -42,7 +46,7 @@ export class FileMiddleware implements NestMiddleware {
 
       if (!userExists) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: ErrorMessage.FileNotFound,
+          message: ErrorMessage.UserNotFound,
         })
       }
 
@@ -51,6 +55,18 @@ export class FileMiddleware implements NestMiddleware {
       if (!loggedUser || loggedUser.id !== userExists.id) {
         return res.status(StatusCodes.UNAUTHORIZED).json({
           message: ErrorMessage.Unauthorized,
+        })
+      }
+
+      if (files.length > maxFilesQuantity) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: ErrorMessage.MaxFileQuantityReached,
+        })
+      }
+
+      if (files.some(file => file.size > maxFileSize)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: ErrorMessage.MaxFileSizeReached,
         })
       }
 
